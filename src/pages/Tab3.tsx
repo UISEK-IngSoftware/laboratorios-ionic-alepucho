@@ -1,7 +1,22 @@
-import { IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import { IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonContent, IonHeader, IonPage, IonTitle, IonToolbar, useIonViewWillEnter } from '@ionic/react';
 import './Tab3.css';
+import { GithubUser } from '../interfaces/GithubUser';
+import React from 'react';
+import { getUserInfo } from '../services/GithubService';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const Tab3: React.FC = () => {
+  const [userInfo, setUserInfo] = React.useState<GithubUser | null>(null);
+  const [loading, setLoading]=React.useState<boolean>(false);
+  const loadUserInfo = async () => {
+    setLoading(true);
+    const userData = await getUserInfo();
+    setUserInfo(userData);
+    setLoading(false);
+  }
+  useIonViewWillEnter(() => {
+    loadUserInfo();
+  });
   return (
     <IonPage>
       <IonHeader>
@@ -18,17 +33,17 @@ const Tab3: React.FC = () => {
 
         <div className="card-container">
           <IonCard className="card">
-            <img src="https://avatars.githubusercontent.com/u/214575627?v=4" alt="Avatar" />
-            <IonCardTitle>Alejandro Brito</IonCardTitle>
-            <IonCardSubtitle>alepucho</IonCardSubtitle>
+            <img src={userInfo?.avatar_url} alt={userInfo?.login} />
             <IonCardHeader>
-              <IonCardContent>
-                Hola, me gusta mi mujer, jugar jueguitos y la plata.
-              </IonCardContent>
+              <IonCardTitle>{userInfo?.name}</IonCardTitle>
+              <IonCardSubtitle>{userInfo?.login}</IonCardSubtitle>
             </IonCardHeader>
+            <IonCardContent>
+              {userInfo?.bio || 'Sin biografía disponible.'}
+            </IonCardContent>
           </IonCard>
         </div>
-
+        {loading&&<LoadingSpinner isOpen={loading}/>}
       </IonContent>
     </IonPage>
   );
