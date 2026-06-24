@@ -11,3 +11,16 @@
     width:100%;
     max-width: 400px;
 }
+
+ion-button {
+  --border-radius: 8px;
+  --background: #000000;
+  --background-hover: #444444;
+  --color: #ffffff;
+  font-weight: bold;
+}
+
+ion-button ion-icon {
+  font-size: 20px;
+  margin-right: 6px;
+}

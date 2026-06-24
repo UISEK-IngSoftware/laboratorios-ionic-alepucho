@@ -1,4 +1,4 @@
-import { IonContent, IonHeader, IonList, IonPage, IonTitle, IonToolbar, useIonViewWillEnter } from '@ionic/react';
+import { IonContent, IonHeader, IonList, IonPage, IonText, IonTitle, IonToolbar, useIonViewWillEnter } from '@ionic/react';
 import RepoItem from '../components/RepoItem';
 import './Tab1.css';
 import { Repository } from '../interfaces/Repository';
@@ -10,11 +10,15 @@ const Tab1: React.FC = () => {
 
   const [repos, setRepos] = React.useState<Repository[]>([]);
   const [loading, setLoading]=React.useState<boolean>(false);
+  const [errorMsg, setError]=React.useState<string>("");
+
   const loadRepos = async () => {
     setLoading(true);
-    const reposData = await fetchRepositories();
-    setRepos(reposData);
-    setLoading(false);
+    fetchRepositories().then((reposData)=>{
+      setRepos(reposData);
+    }).catch((error)=>{
+      setError("Error al cargar los repositorios: " + error);
+    }).finally(()=> setLoading(false))
   }
   
   useIonViewWillEnter(()=>{
@@ -29,7 +33,7 @@ const Tab1: React.FC = () => {
           <IonTitle>Repositorio</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <IonContent fullscreen>
+      <IonContent fullscreen className="ion-padding">
         <IonHeader collapse="condense">
           <IonToolbar>
             <IonTitle size="large">Repositorio</IonTitle>
@@ -41,10 +45,10 @@ const Tab1: React.FC = () => {
           ))}
         </IonList>
         {loading&&<LoadingSpinner isOpen={loading}/>}
-        {!loading&&repos.length===0&&(
-          <div>
-            <p> No se encontraron repositorio</p>
-          </div>
+        {errorMsg!==""&&(
+          <IonText color ="danger">
+            {errorMsg}
+          </IonText>
         )}
       </IonContent>
     </IonPage>

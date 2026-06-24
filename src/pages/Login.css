@@ -1,0 +1,47 @@
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.login-form {
+  width: 100%;
+  max-width: 400px;
+  padding: 2rem;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.login-logo {
+  font-size: 64px;
+  color: #333;
+  margin-bottom: 1.5rem;
+}
+
+.login-field {
+  margin-bottom: 1rem;
+}
+
+
+ion-input {
+  --color: #000000;
+  --placeholder-color: #0c0c0c;
+  --highlight-color-focused: #000000;
+  --border-radius: 8px;
+}
+
+ion-input::part(label) {
+  color: #000000;
+}
+
+ion-button {
+  margin-top: 1rem;
+  --border-radius: 8px;
+  --background: #000000;
+  --background-hover: #444444;
+  --color: #ffffff;
+  font-weight: bold;
+}

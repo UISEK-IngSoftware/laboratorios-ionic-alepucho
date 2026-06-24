@@ -1,4 +1,4 @@
-import { IonButton, IonContent, IonHeader, IonInput, IonPage, IonTextarea, IonTitle, IonToolbar } from '@ionic/react';
+import { IonButton, IonContent, IonHeader, IonInput, IonPage, IonText, IonTextarea, IonTitle, IonToolbar, useIonViewWillEnter } from '@ionic/react';
 import './Tab2.css';
 import { useHistory } from 'react-router-dom';
 import { RepositoryPayload } from '../interfaces/RepositoryPayload';
@@ -7,8 +7,10 @@ import React from 'react';
 import LoadingSpinner from '../components/LoadingSpinner';
 
 const Tab2: React.FC = () => {
-  const [loading, setLoading]=React.useState<boolean>(false);
+  const [loading, setLoading] = React.useState<boolean>(false);
   const history = useHistory();
+  const [errorMsg, setErrorMsg] = React.useState<string>("");
+
   const repoFormData: RepositoryPayload = {
     name: '',
     description: ''
@@ -23,20 +25,21 @@ const Tab2: React.FC = () => {
 
   const saveRepository = () => {
     if (repoFormData.name.trim() === '') {
-      alert('El nombre del repositorio es obligatorio');
+      setErrorMsg("El nombre del repositorio es obligatorio.");
       return;
     }
     setLoading(true);
     createRepository(repoFormData).then(() => {
       history.push('/tab1');
     }).catch((error) => {
-      console.error('Error al crear el repositorio', error);
-      alert('Hubo un error al crear el repositorio');
-      }).finally(() => {
-        setLoading(false);
-      });
-    };
+      setErrorMsg("Error al crear el repositorio-> " + error);
+    }).finally(() => {
+      setLoading(false);
+    });
+  };
 
+  useIonViewWillEnter(() => setErrorMsg(""))
+  
   return (
     <IonPage>
       <IonHeader>
@@ -71,6 +74,11 @@ const Tab2: React.FC = () => {
             onIonChange={(e) => setRepoDescription(e.detail.value!)}
             autoGrow
           ></IonTextarea>
+            {errorMsg !== "" && (
+              <IonText color="danger">
+                {errorMsg}
+              </IonText>
+            )}
           <IonButton
             className='form-field'
             expand="block"
@@ -80,7 +88,7 @@ const Tab2: React.FC = () => {
             Crear Repositorio
           </IonButton>
         </div>
-        {loading&&<LoadingSpinner isOpen={loading}/>}
+        {loading && <LoadingSpinner isOpen={loading} />}
       </IonContent>
     </IonPage>
   );
