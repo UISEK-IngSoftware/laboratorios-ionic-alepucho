@@ -46,6 +46,23 @@ export const createRepository=async (repository:RepositoryPayload):Promise <Repo
     }
 }
 
+export const deleteRepository=async (owner:string, repo:string):Promise<void> => {
+    try{
+        await githubApiClient.delete(`/repos/${owner}/${repo}`);
+    }catch(error){
+        throw new Error(`${(error as Error).message}`);
+    }
+};
+
+export const updateRepository=async (owner:string, repo:string, repository:RepositoryPayload):Promise<Repository | null> => {
+    try{
+        const response=await githubApiClient.patch(`/repos/${owner}/${repo}`, repository);
+        return response.data as Repository;
+    }catch(error){
+        throw new Error(`${(error as Error).message}`);
+    }
+};
+
 export const getUserInfo=async():Promise<GithubUser | null> => {
     try{
         const response=await githubApiClient.get(`/user`);
